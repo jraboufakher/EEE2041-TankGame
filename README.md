@@ -3,7 +3,10 @@
 
 A small tank game implemented with OpenGL (GLSL) and GLUT, created for **EEE2041 — COMPUTER VISION & GRAPHICS**.
 
-> **Status:** This repository reflects the **current** state of the project as provided. Several required source files and all runtime models/textures are **missing**; see **Missing Files** and **Assets**.
+This repository is **self‑contained**:
+- Source code (including `common/` utilities)
+- Shaders (`shader.vert`, `shader.frag`)
+- Runtime assets in `./models/` (OBJ meshes, BMP textures, and level maps)
 
 ---
 
@@ -14,17 +17,17 @@ A small tank game implemented with OpenGL (GLSL) and GLUT, created for **EEE2041
   - Shaders loaded via `Shader::LoadFromFile("shader.vert","shader.frag")`.
 - **Geometry & Textures**
   - OBJ mesh loading/drawing via `common/Mesh.{h,cpp}`
-  - BMP texture loading via `Texture::LoadBMP` (header referenced but not present).
+  - BMP texture loading via `common/Texture.{h,cpp}`.
 - **Math Utilities**
   - 4×4 matrix operations via `common/Matrix.{h,cpp}` for model–view and projection transforms.
 - **Camera**
-  - Spherical camera manipulator (`SphericalCameraManipulator`) for mouse-driven pan (cursor hidden in window).
+  - Spherical camera manipulator (`common/SphericalCameraManipulator.{h,cpp}`) for mouse-driven pan (cursor hidden in window).
 - **Gameplay (from `main.cpp`)**
   - Tank with chassis, turret, and wheels; turret pans with mouse.
   - Fire a ball from the turret; simple range/interaction checks.
   - Collectible coins; per-level time limit; “Level Completed” / “Out of Time” states.
   - Middle-click context menu: **Pause**, **Continue**, **Exit**.
-  - Levels loaded from text files (`Map1.txt`, `Map2.txt`, `Map3.txt`).
+  - Levels loaded from text files in `./models/` (`Map1.txt`, `Map2.txt`, `Map3.txt`).
 
 ---
 
@@ -43,41 +46,25 @@ A small tank game implemented with OpenGL (GLSL) and GLUT, created for **EEE2041
 ## Project Structure
 ```
 common/
-  Matrix.h / Matrix.cpp   # 4×4 matrices (translate/rotate/scale/perspective/lookAt)
-  Mesh.h   / Mesh.cpp     # OBJ parsing, GL buffers, Draw()
+  Matrix.h / Matrix.cpp
+  Mesh.h   / Mesh.cpp
+  Shader.h / Shader.cpp
+  Texture.h/ Texture.cpp
+  Vector.h/ Vector.cpp
+  SphericalCameraManipulator.h / SphericalCameraManipulator.cpp
 
-main.cpp                  # init, input, rendering, gameplay, HUD, level loading
-shader.vert               # GLSL vertex shader
-shader.frag               # GLSL fragment shader
-qmake.pro                 # qmake project file (Linux, OpenGL/GLUT/GLEW/GLU)
+models/
+  chassis.obj  turret.obj  front_wheel.obj  back_wheel.obj
+  cube.obj     coin.obj    ball.obj
+  hamvee.bmp   Crate.bmp   coin.bmp         ball.bmp
+  Map1.txt     Map2.txt    Map3.txt
+
+main.cpp
+shader.vert
+shader.frag
+qmake.pro
+README.md
 ```
-> Note: `common.zip` also contained `Matrix` and `Mesh`. The repository *references* additional files listed below that are **not present**.
-
----
-
-## Missing Files (required to build)
-The following are included in the code and qmake project but **not present** in this repo snapshot:
-- `common/Shader.h`, `common/Shader.cpp` (for `Shader::LoadFromFile`)
-- `common/Vector.h` (and possibly `Vector.cpp`)
-- `common/Texture.h`, `common/Texture.cpp` (for `Texture::LoadBMP`)
-- `common/SphericalCameraManipulator.h`, `common/SphericalCameraManipulator.cpp`
-
-> Without these, the project will not compile.
-
-**TODO:** Add the missing headers/implementations to `common/`.
-
----
-
-## Assets (required at runtime)
-The game loads models, textures, and maps from **`../models/`** (relative to the executable’s working directory). Filenames referenced in `main.cpp` include:
-- **Meshes:** `chassis.obj`, `turret.obj`, `front_wheel.obj`, `back_wheel.obj`, `cube.obj`, `coin.obj`, `ball.obj`
-- **Textures:** `hamvee.bmp`, `Crate.bmp`, `coin.bmp`, `ball.bmp`
-- **Level maps:** `Map1.txt`, `Map2.txt`, `Map3.txt`
-
-> These assets were only on the original machine and are **currently unavailable**. The game will compile (once sources are complete) but cannot run correctly without them.
-
-**TODO:** Restore/populate `../models/` with the exact files listed above.
-
 ---
 
 ## Build (Linux, qmake)
@@ -95,40 +82,34 @@ Linked libraries (as per `qmake.pro`):
 -lGLEW -lglut -lGLU -lGL
 ```
 
-> Ensure the **missing source files** are added to `common/` and library paths resolve on your Linux system.
-
 ---
 
 ## Run
 Once built, launch the executable. Level-specific time limits and map files are set in `Level()`:
-- Level 1 → `../models/Map1.txt`, **30.0 s**
-- Level 2 → `../models/Map2.txt`, **80.0 s**
-- Level 3 → `../models/Map3.txt`, **150.0 s**
+- Level 1 → `./models/Map1.txt`, **30.0 s**
+- Level 2 → `./models/Map2.txt`, **80.0 s**
+- Level 3 → `./models/Map3.txt`, **150.0 s**
 
 HUD displays **Time**, **Coins Collected**, and **Level**. Status text appears when the level is complete or time runs out.
-
-> **Assets required:** The executable expects the `../models/` folder populated as above.
 
 ---
 
 ## Demo
-A gameplay video exists.
-
-**TODO:** Add a link to the video or place the file at `docs/demo.mp4` and link it here.
+![Gameplay demo](https://github.com/user-attachments/assets/b7968c2d-a914-46dd-be7b-e0c48eb0a348)
 
 ---
 
 ## Module Header
 **EEE2041 — COMPUTER VISION & GRAPHICS**  
 **Assignment:** Tank Game (OpenGL/GLUT)  
-**Student:** Jana Abou Fakher 2023
+**Student:** Jana Abou Fakher (ID: 6655682), Academic Year: 2022–23
 
 ---
 
 ## License
 Copyright (c) 2023 Jana Abou Fakher
 
-This project was created as part of EEE2041 – Computer Vision & Graphics at the University of Surrey.
-The author retains copyright. The University of Surrey holds a non-exclusive license to use this work for teaching and assessment purposes.
+This project was created as part of **EEE2041 – Computer Vision & Graphics** at the **University of Surrey**.  
+The author retains copyright. The University of Surrey holds a non-exclusive license to use this work for teaching and assessment purposes.  
 
 All other rights reserved. Redistribution or use outside of the University context requires the author’s permission.
